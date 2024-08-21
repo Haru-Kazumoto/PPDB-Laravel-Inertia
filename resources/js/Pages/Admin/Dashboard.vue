@@ -1,4 +1,5 @@
 <template>
+    <Head title="Admin dashboard" />
     <AppLayout>
         <div class="d-flex flex-column gap-3">
             <div class="card" style="background-color: #7C93C3;">
@@ -22,14 +23,9 @@
                 <div class="card-body d-flex flex-column">
                     <div class="fs-6 fw-medium mb-4 d-flex flex-row align-items-center">
                         <span>New student registered today</span>
-                        <n-button class="ms-auto" color="#55679C">
-                            <template #icon>
-                                <n-icon>
-                                    <CubeOutline />
-                                </n-icon>
-                            </template>
-                            View all data
-                        </n-button>
+                        <Link class="ms-auto" :href="route('register')" as="button" type="button" style="width: 150px; border-radius: 2px; background-color: #2080f0; color: white; border: none; padding: 7px; font-size: 14px; cursor: pointer;">
+                            <span>View all data</span>
+                        </Link>
                     </div>
                     <n-data-table
                         :columns="columns"
@@ -44,24 +40,34 @@
 </template>
 
 <script lang="ts">
-import { usePage } from "@inertiajs/vue3";
+import { usePage, Head, Link } from "@inertiajs/vue3";
 import { defineComponent, h } from 'vue';
 import AppLayout from "../../Layouts/AppLayout.vue";
 import CardCount from "../../Components/CardCount.vue";
-import { DataTableColumns, NButton, useMessage } from "naive-ui";
+import { DataTableColumns, NAvatar, NButton, useMessage } from "naive-ui";
 import { CubeOutline } from '@vicons/ionicons5';
 
-interface Song {
-    no: number
-    title: string
-    length: string
+interface Student {
+    profile: string;
+    student_name: string;
+    batch_choosen: string;
+    batch_number: string;
+    registered_at: string;
 }
 
-function createColumns(): DataTableColumns<Song> {
+function createColumns(): DataTableColumns<Student> {
     return [
         {
             title: 'Profile',
-            key: 'profile'
+            key: 'profile',
+            render(row) {
+                return h(NAvatar, {
+                    src: row.profile,
+                    size: 50,
+                    round: true,
+                    previewSrc: row.profile // Enables the preview when clicked
+                });
+            }
         },
         {
             title: 'Student name',
@@ -72,17 +78,15 @@ function createColumns(): DataTableColumns<Song> {
             key: 'batch_choosen'
         },
         {
+            title: 'Batch number',
+            key: 'batch_number'
+        },
+        {
             title: 'Registered at',
             key: 'registered_at'
         }
-    ]
+    ];
 }
-
-const data: Song[] = [
-    { no: 3, title: 'Wonderwall', length: '4:18' },
-    { no: 4, title: 'Don\'t Look Back in Anger', length: '4:48' },
-    { no: 12, title: 'Champagne Supernova', length: '7:27' }
-]
 
 export default defineComponent({
     setup() {
@@ -94,7 +98,22 @@ export default defineComponent({
             { title: "Waiting to approved", subTitle: "Payment", count: 10, bgColor: '#f2c97d' },
             { title: "Waiting to accept", subTitle: "Registering student", count: 10 },
             { title: "Registered Student", subTitle: "Student", count: 10, bgColor: '#63e2b7' },
-        ]
+        ];
+
+        // Example data with profile image URLs
+        const data: Student[] = [
+            { profile: '/images/foto_formal.jpeg', student_name: 'John Doe', batch_choosen: 'Batch A',batch_number: "1", registered_at: '2024-08-20' },
+            { profile: '/images/foto_formal.jpeg', student_name: 'Jane Smith', batch_choosen: 'Batch B',batch_number: "1", registered_at: '2024-08-21' },
+            { profile: '/images/foto_formal.jpeg', student_name: 'John Doe', batch_choosen: 'Batch A',batch_number: "1", registered_at: '2024-08-20' },
+            { profile: '/images/foto_formal.jpeg', student_name: 'Jane Smith', batch_choosen: 'Batch B',batch_number: "1", registered_at: '2024-08-21' },
+            { profile: '/images/foto_formal.jpeg', student_name: 'John Doe', batch_choosen: 'Batch A',batch_number: "1", registered_at: '2024-08-20' },
+            { profile: '/images/foto_formal.jpeg', student_name: 'Jane Smith', batch_choosen: 'Batch B',batch_number: "1", registered_at: '2024-08-21' },
+            { profile: '/images/foto_formal.jpeg', student_name: 'John Doe', batch_choosen: 'Batch A',batch_number: "1", registered_at: '2024-08-20' },
+            { profile: '/images/foto_formal.jpeg', student_name: 'Jane Smith', batch_choosen: 'Batch B',batch_number: "1", registered_at: '2024-08-21' },
+            { profile: '/images/foto_formal.jpeg', student_name: 'John Doe', batch_choosen: 'Batch A',batch_number: "1", registered_at: '2024-08-20' },
+            { profile: '/images/foto_formal.jpeg', student_name: 'Jane Smith', batch_choosen: 'Batch B',batch_number: "1", registered_at: '2024-08-21' },
+            // Add more student data here...
+        ];
 
         return {
             user,
@@ -102,11 +121,13 @@ export default defineComponent({
             data,
             columns: createColumns(),
             pagination: false as const
-        }
+        };
     },
     components: {
         CardCount,
-        CubeOutline
+        CubeOutline,
+        Head,
+        Link
     }
 });
 </script>

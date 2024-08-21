@@ -1,25 +1,3 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
-import Sidebar from '../Components/Sidebar.vue';
-import Navbar from '../Components/Navbar.vue';
-import { usePage } from '@inertiajs/vue3';
-
-export default defineComponent({
-    setup(){
-        const page = usePage();
-        const user = page.props.auth.user;
-
-        return {
-            user
-        }
-    },
-    components: {
-        Sidebar,
-        Navbar
-    }
-});
-</script>
-
 <template>
     <n-space vertical>
         <n-layout>
@@ -42,3 +20,24 @@ export default defineComponent({
     </n-space>
 </template>
 
+<script lang="ts">
+import { defineComponent } from 'vue';
+import Sidebar from '../Components/Sidebar.vue';
+import Navbar from '../Components/Navbar.vue';
+import { usePage } from '@inertiajs/vue3';
+
+export default defineComponent({
+    setup(){
+        const page = usePage();
+        const user = page.props.auth.user;
+
+        return {
+            user
+        }
+    },
+    components: {
+        Sidebar,
+        Navbar
+    }
+});
+</script>

@@ -6,7 +6,7 @@
                 PPDB Online Management
             </div>
             <div class="d-flex flex-row ms-auto">
-                <n-dropdown trigger="click" :options="dropdownOptions">
+                <n-dropdown trigger="click" :options="dropdownOptions" @select="handleSelect">
                     <AccountProfile :adminName="fullname" :isAdmin="isAdmin" />
                 </n-dropdown>
             </div>
@@ -24,6 +24,8 @@ import {
   LogOutOutline as LogoutIcon,
   PersonCircleOutline as UserIcon
 } from '@vicons/ionicons5'
+import { useForm } from '@inertiajs/vue3';
+import Swal from 'sweetalert2';
 
 function renderIcon(icon: Component) {
     return () => {
@@ -35,21 +37,31 @@ function renderIcon(icon: Component) {
 
 export default defineComponent({
     setup() {
+        const form = useForm({});
         const dropdownOptions = [
-            {
-                label: 'Profile',
-                key: 'profile',
-                icon: renderIcon(UserIcon)
-            },
             {
                 label: 'Logout',
                 key: 'logout',
                 icon: renderIcon(LogoutIcon)
             }
-        ]
+        ];
+
+        const handleSelect = (key: string) => {
+            if(key === 'logout') {
+                form.post(route('logout'), {
+                    onFinish: () => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success logout',
+                        })
+                    }
+                });
+            }
+        }
 
         return {
-            dropdownOptions
+            dropdownOptions,
+            handleSelect
         }
     },
     components: {

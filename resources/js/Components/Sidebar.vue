@@ -37,7 +37,7 @@ const menuOptions = [
             {
                 label: 'Create Registration Paths',
                 key: 'create-registration-paths',
-                href: '/registration/paths'
+                href: '/admin/registration-paths'
             },
             {
                 label: 'Create Student Registration',
@@ -76,9 +76,9 @@ export default defineComponent({
 
         // Theme overrides untuk menu
         const menuThemeOverrides: MenuThemeOverrides = {
-            itemTextColorActive: 'white',  // Warna teks saat menu dipilih
+            itemTextColorActive: 'white', 
             itemIconColorActive: 'white',
-            itemColorActive: '#55679C',      // Warna background saat menu dipilih
+            itemColorActive: '#55679C',      
             itemColorActiveHover: '#7C93C3',
             itemTextColorActiveHover: 'white',
             itemIconColorActiveHover: 'white',
