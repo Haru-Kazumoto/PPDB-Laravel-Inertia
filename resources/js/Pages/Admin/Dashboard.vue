@@ -1,27 +1,112 @@
 <template>
-    <div>
-        <h1>helo {{ user.name }}</h1>
-        <div class="d-flex flex-column">
-            <span>{{ num }}</span>
-            <n-button @click="increase" type="info" class="w-25">Increase</n-button>
+    <AppLayout>
+        <div class="d-flex flex-column gap-3">
+            <div class="card" style="background-color: #7C93C3;">
+                <div class="card-body h-75 d-flex flex-row align-items-center">
+                    <n-image width="300" src="/images/greetings-admin-1.png" preview-disabled />
+                    <div class="d-flex flex-column">
+                        <span class="fs-3 fw-medium text-white">
+                            Hello {{ user.fullname }}, let's get work
+                        </span>
+                        <span class="fs-5 text-white">
+                            Let's give your best effort in everything you do today!
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <n-flex justify="space-between">
+                <CardCount v-for="(data, index) in dataCount" :key="index" :title="data.title" :count="data.count"
+                    :subTitle="data.subTitle" :bgColor="data.bgColor" />
+            </n-flex>
+            <div class="card">
+                <div class="card-body d-flex flex-column">
+                    <div class="fs-6 fw-medium mb-4 d-flex flex-row align-items-center">
+                        <span>New student registered today</span>
+                        <n-button class="ms-auto" color="#55679C">
+                            <template #icon>
+                                <n-icon>
+                                    <CubeOutline />
+                                </n-icon>
+                            </template>
+                            View all data
+                        </n-button>
+                    </div>
+                    <n-data-table
+                        :columns="columns"
+                        :data="data"
+                        :pagination="pagination"
+                        :bordered="false"
+                    />
+                </div>
+            </div>
         </div>
-    </div>
+    </AppLayout>
 </template>
 
-<script setup lang="ts">
-import { usePage } from '@inertiajs/vue3';
-import {ref, computed} from 'vue';
+<script lang="ts">
+import { usePage } from "@inertiajs/vue3";
+import { defineComponent, h } from 'vue';
+import AppLayout from "../../Layouts/AppLayout.vue";
+import CardCount from "../../Components/CardCount.vue";
+import { DataTableColumns, NButton, useMessage } from "naive-ui";
+import { CubeOutline } from '@vicons/ionicons5';
 
-const page = usePage();
-const num = ref(0);
-
-function increase(){
-    return num.value += 1;
+interface Song {
+    no: number
+    title: string
+    length: string
 }
 
-const user = computed(() => page.props.auth.user);
+function createColumns(): DataTableColumns<Song> {
+    return [
+        {
+            title: 'Profile',
+            key: 'profile'
+        },
+        {
+            title: 'Student name',
+            key: 'student_name'
+        },
+        {
+            title: 'Batch choosen',
+            key: 'batch_choosen'
+        },
+        {
+            title: 'Registered at',
+            key: 'registered_at'
+        }
+    ]
+}
 
-defineProps({
-    name: String
+const data: Song[] = [
+    { no: 3, title: 'Wonderwall', length: '4:18' },
+    { no: 4, title: 'Don\'t Look Back in Anger', length: '4:48' },
+    { no: 12, title: 'Champagne Supernova', length: '7:27' }
+]
+
+export default defineComponent({
+    setup() {
+        const page = usePage();
+        const user = page.props.auth.user;
+        const message = useMessage();
+
+        const dataCount = [
+            { title: "Waiting to approved", subTitle: "Payment", count: 10, bgColor: '#f2c97d' },
+            { title: "Waiting to accept", subTitle: "Registering student", count: 10 },
+            { title: "Registered Student", subTitle: "Student", count: 10, bgColor: '#63e2b7' },
+        ]
+
+        return {
+            user,
+            dataCount,
+            data,
+            columns: createColumns(),
+            pagination: false as const
+        }
+    },
+    components: {
+        CardCount,
+        CubeOutline
+    }
 });
 </script>

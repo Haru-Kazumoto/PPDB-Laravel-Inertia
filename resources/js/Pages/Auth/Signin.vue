@@ -1,7 +1,7 @@
 <template>
     <Head title="Signin" />
     <div class="card d-flex flex-row flex-column justify-content-center px-5 shadow-lg" style="width: 30rem; height: 30rem">
-        <div class="d-flex flex-row align-items-center my-3">
+        <div class="d-flex flex-row align-items-center my-3 justify-content-center">
             <div class="me-3">
                 <img src="/images/creative_digital.png" alt="Creative Digital" class="img-fluid" style="max-width: 100px;">
             </div>
@@ -25,10 +25,9 @@
             <div class="my-3 d-flex flex-column">
                 <n-button type="primary" attr-type="submit">login</n-button>
                 <n-divider />
-                <Link :href="route('register')" as="button" type="button">
+                <Link :href="route('register')" as="button" type="button" style="border-radius: 2px; background-color: #2080f0; color: white; border: none; padding: 7px; font-size: 14px; cursor: pointer;">
                     <span>Daftar disini!</span>
                 </Link>
-                <!-- <n-button type="info">Daftar disini!</n-button> -->
             </div>
         </n-form>
     </div>
@@ -40,6 +39,7 @@ import GuestLayout from '../../Layouts/GuestLayout.vue';
 import {defineComponent, ref} from 'vue';
 import { FormInst, FormRules, useNotification } from 'naive-ui';
 import Swal from 'sweetalert2';
+import { UserLoginDTO } from '../../types/request.types';
 
 export default defineComponent({
     setup() {
@@ -47,9 +47,9 @@ export default defineComponent({
         const notification = useNotification();
         
         const formRef = ref<FormInst | null>(null);
-        const form = useForm({
-            username: null,
-            password: null
+        const form = useForm<UserLoginDTO>({
+            username: '',
+            password: ''
         });
 
         const rules: FormRules = {
@@ -62,18 +62,18 @@ export default defineComponent({
 
             formRef.value?.validate().then(() => {
                 form.post(route('login'), {
-                onError: (errors) => {
-                    if (errors.username) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Data tidak ada',
-                            text: 'cek kembali akun anda'
-                        })
+                    onError: (errors) => {
+                        if (errors.username) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Data tidak ada',
+                                text: 'cek kembali akun anda'
+                            })
+                        }
+                    },
+                    onFinish: () => {
+                        form.reset('password');
                     }
-                },
-                onFinish: () => {
-                    form.reset('password');
-                }
                 });
             });
         };

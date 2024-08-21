@@ -8,6 +8,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'login']);
 
-    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
-    Route::post('/register', [RegisteredUserController::class, 'store']);
+    Route::get('/register', [RegisteredUserController::class, 'createStudent'])->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'storeStudent']);
+
+    Route::get('/register-admin', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
+    Route::post('/register-admin', [RegisteredUserController::class, 'storeAdmin']);
 });

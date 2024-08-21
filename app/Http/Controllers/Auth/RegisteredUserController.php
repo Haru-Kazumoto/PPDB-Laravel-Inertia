@@ -5,33 +5,34 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\User;
-use Illuminate\Foundation\Exceptions\Renderer\Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Support\Str;
-use RealRashid\SweetAlert\Facades\Alert;
 
 class RegisteredUserController extends Controller
 {
-    public function create(): Response
+    public function createStudent(): Response
     {
         return Inertia::render('Auth/Register');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function createAdmin(): Response
+    {
+        return Inertia::render('Auth/RegisterAdmin');
+    }
+
+    public function storeStudent(Request $request): RedirectResponse
     {
         $request->validate([
             'fullname' => 'required|string',
-            'username' => 'required|string',
             'email' => 'required|string|email|unique:users,email',
             'phone' => 'required|string',
             'school_origin' => 'required|string',
-            'age' => 'required|integer',
-            'student_picture' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+            'gender' => 'required|string',
         ]);
 
         DB::beginTransaction();
@@ -43,37 +44,61 @@ class RegisteredUserController extends Controller
                 'is_admin' => false,
             ]);
 
-            $studentPicture = $request->file('student_picture');
-            $imageName = Str::uuid() . '.' . $studentPicture->getClientOriginalExtension();
-
-            //storing file
-            Storage::putFileAs(
-                'student_photos', $studentPicture, $imageName
-            );
-
-            Student::create([
-                'user_id' => $user->id,
-                'fullname' => $user->fullname,
+            $student = new Student([
+                'fullname' => $request->input('fullname'),
                 'phone' => $request->input('phone'),
                 'school_origin' => $request->input('school_origin'),
-                'age' => $request->input('age'),
-                'student_picture' => $imageName,
+                'gender' => $request->input('gender')
             ]);
 
-            DB::commit();
+            $user->student()->save($student);
 
-            Alert::info(
-                'Informasi registrasi',
-                'Data berhasil disimpan, namun anda harus menunggu admin mengaktifkan akun anda dan dikirim melalui email tertera'
-            );
+            DB::commit();
 
             return redirect()->intended(route('login', absolute: false));
         } catch(\Exception $error) {
             DB::rollback();
 
-            return redirect()->back()->withErros([
-                'error' => 'An error occured while creating data'
+            return redirect()->back()->withErrors([
+                'error' => $error->getMessage()
             ])->withInput();
         }
     }
+
+
+    public function storeAdmin(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'fullname' => 'required|string|max:255',
+            'username' => 'required|string|unique:users,username',
+            'password' => 'required|string',
+            'email' => 'required|string|unique:users,email'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            User::create([
+                'fullname' => $request->input('fullname'),
+                'username' => $request->input('username'),
+                'password' => Hash::make($request->input('password')),
+                'email' => $request->input('email'),
+                'is_active' => true,
+                'is_admin' => true,
+            ]);
+
+            DB::commit();
+
+            return redirect()->intended(route('login', absolute: false));
+        } catch(\Exception $error) {
+            DB::rollback();
+
+            return redirect()->back()->withErrors([
+                'error' => $error->getMessage()
+            ])->withInput();
+        }
+    }
+
+    public function activateStudentAccount(User $user)
+    {}
 }
