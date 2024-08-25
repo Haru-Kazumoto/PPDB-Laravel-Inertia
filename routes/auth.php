@@ -2,11 +2,20 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->intended('/login');
-})->middleware(['auth']);
+    if (Auth::check()) {
+        $user = Auth::user();
+        if ($user->is_admin) {
+            return redirect()->route('dashboard.admin');
+        } else {
+            return redirect()->route('dashboard.user');
+        }
+    }
+    return redirect()->route('login');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');

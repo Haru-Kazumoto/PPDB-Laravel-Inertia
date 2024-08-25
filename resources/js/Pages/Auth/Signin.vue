@@ -73,6 +73,11 @@ export default defineComponent({
                     },
                     onFinish: () => {
                         form.reset('password');
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: `Hello ${page.props.auth.user.fullname}`
+                        });
                     }
                 });
             });

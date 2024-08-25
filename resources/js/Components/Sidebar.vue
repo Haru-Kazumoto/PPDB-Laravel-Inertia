@@ -71,6 +71,7 @@ const menuOptions = [
 ]
 
 export default defineComponent({
+    name: "Sidebar",
     setup() {
         const collapsed = ref(false);
 

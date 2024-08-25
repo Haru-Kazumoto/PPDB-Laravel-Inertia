@@ -17,3 +17,8 @@ export interface UserLoginDTO {
     username: string,
     password: string,
 }
+
+export interface RegistrationPathCreateDTO {
+    path_name: string,
+    path_type: string,
+}

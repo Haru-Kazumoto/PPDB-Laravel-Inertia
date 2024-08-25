@@ -1,15 +1,12 @@
 <template>
-    <div class="card" style="width: 380px;" >
+    <div class="card" style="width: 380px;">
         <div class="card-body">
             <n-flex>
-                <div 
-                    class="card " 
-                    :style="{
-                        width: '5px',
-                        border: 'none', 
-                        backgroundColor: bgColor
-                    }" 
-                />
+                <div class="card " :style="{
+                    width: '5px',
+                    border: 'none',
+                    backgroundColor: bgColor
+                }" />
                 <n-flex vertical>
                     <span class="fs-4 fw-semibold d-flex flex-column">
                         {{ title }}
@@ -27,30 +24,28 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+import { defineComponent } from 'vue';
 
-    export default defineComponent({
-        setup(){
-
+export default defineComponent({
+    name: "CardCount",
+    props: {
+        title: {
+            type: String,
+            required: true,
         },
-        props: {
-            title: {
-                type: String,
-                required: true,
-            },
-            subTitle: {
-                type: String,
-                required: false,
-            },
-            count: {
-                type: Number,
-                required: true
-            },
-            bgColor: {
-                type: String,
-                required: false,
-                default: "#7C93C3"
-            }
+        subTitle: {
+            type: String,
+            required: false,
+        },
+        count: {
+            type: Number,
+            required: true
+        },
+        bgColor: {
+            type: String,
+            required: false,
+            default: "#7C93C3"
         }
-    });
+    }
+});
 </script>

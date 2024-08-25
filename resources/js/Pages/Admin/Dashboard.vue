@@ -16,8 +16,14 @@
                 </div>
             </div>
             <n-flex justify="space-between">
-                <CardCount v-for="(data, index) in dataCount" :key="index" :title="data.title" :count="data.count"
-                    :subTitle="data.subTitle" :bgColor="data.bgColor" />
+                <CardCount 
+                    v-for="(data, index) in dataCount" 
+                    :key="index" 
+                    :title="data.title" 
+                    :count="data.count"
+                    :subTitle="data.subTitle" 
+                    :bgColor="data.bgColor" 
+                />
             </n-flex>
             <div class="card">
                 <div class="card-body d-flex flex-column">
@@ -94,10 +100,14 @@ export default defineComponent({
         const user = page.props.auth.user;
         const message = useMessage();
 
+        const unconfirmedPaymentCount = page.props.unconfirmedPaymentCount;
+        const studentAccountNotAccepted = page.props.studentAccountNotAccepted;
+        const studentRegistered = page.props.studentRegistered;
+
         const dataCount = [
-            { title: "Waiting to approved", subTitle: "Payment", count: 10, bgColor: '#f2c97d' },
-            { title: "Waiting to accept", subTitle: "Registering student", count: 10 },
-            { title: "Registered Student", subTitle: "Student", count: 10, bgColor: '#63e2b7' },
+            { title: "Waiting to approved", subTitle: "Payment", count: unconfirmedPaymentCount, bgColor: '#f2c97d' },
+            { title: "Waiting to accept", subTitle: "Registering student", count: studentAccountNotAccepted },
+            { title: "Registered Student", subTitle: "Student", count: studentRegistered, bgColor: '#63e2b7' },
         ];
 
         // Example data with profile image URLs
@@ -128,6 +138,20 @@ export default defineComponent({
         CubeOutline,
         Head,
         Link
+    },
+    props: {
+        unconfirmedPaymentCount: {
+            type: Number,
+            required: true,
+        },
+        studentAccountNotAccepted: {
+            type: Number,
+            required: true,
+        },
+        studentRegistered: {
+            type: Number,
+            required: true,
+        }
     }
 });
 </script>

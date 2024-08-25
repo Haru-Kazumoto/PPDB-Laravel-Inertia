@@ -9,12 +9,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
-use RealRashid\SweetAlert\Facades\Alert;
 
 class AuthenticatedSessionController extends Controller
 {
     public function create(): Response
     {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->is_admin) {
+                return redirect()->route('dashboard.admin');
+            } else {
+                return redirect()->route('dashboard.user');
+            }
+        }
+
+        // Ini akan memastikan tidak terjadi loop jika pengguna sudah login dan sedang mencoba mengakses login page.
         return Inertia::render('Auth/Signin');
     }
 
@@ -26,8 +35,6 @@ class AuthenticatedSessionController extends Controller
 
         $user = $loginRequest->user();
 
-        Alert::success("Success login");
-        
         if($user->is_admin) {
             return redirect()->intended(route('dashboard.admin', absolute: false));
         } else {
@@ -43,6 +50,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect('/');
     }
 }

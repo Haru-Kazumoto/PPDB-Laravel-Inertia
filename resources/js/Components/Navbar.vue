@@ -36,6 +36,7 @@ function renderIcon(icon: Component) {
 }
 
 export default defineComponent({
+    name: "Navbar",
     setup() {
         const form = useForm({});
         const dropdownOptions = [
